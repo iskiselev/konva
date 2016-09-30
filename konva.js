@@ -1,9 +1,9 @@
 
 /*
- * Konva JavaScript Framework v1.2.2
+ * Konva JavaScript Framework v1.2.2-HC1
  * http://konvajs.github.io/
  * Licensed under the MIT or GPL Version 2 licenses.
- * Date: Wed Sep 21 2016
+ * Date: Fri Sep 30 2016
  *
  * Original work Copyright (C) 2011 - 2013 by Eric Rowell (KineticJS)
  * Modified work Copyright (C) 2014 - 2015 by Anton Lavrenov (Konva)
@@ -39,7 +39,7 @@
 
     var Konva = {
         // public
-        version: '1.2.2',
+        version: '1.2.2-HC1',
 
         // private
         stages: [],
@@ -7014,7 +7014,9 @@
 
             if (hasClip && layer) {
                 context.save();
-                layer._applyTransform(this, context);
+                var transform = this.getAbsoluteTransform(top);
+                var m = transform.getMatrix();
+                context.transform(m[0], m[1], m[2], m[3], m[4], m[5]);
                 context.beginPath();
                 if (clipFunc) {
                   clipFunc.call(this, context, this);
@@ -7024,7 +7026,8 @@
                   context.rect(clipX, clipY, clipWidth, clipHeight);
                 }
                 context.clip();
-                context.reset();
+                m = transform.invert().getMatrix();
+                context.transform(m[0], m[1], m[2], m[3], m[4], m[5]);
             }
 
             this.children.each(function(child) {
